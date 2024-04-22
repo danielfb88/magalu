@@ -53,4 +53,14 @@ export class FileUploadService {
     )
     return userList.sort((a, b) => a.id - b.id)
   }
+
+  getDateFromString(dateString: string): Date {
+    const year = dateString[5].substring(0, 4)
+    const month = dateString[5].substring(4, 6)
+    const day = dateString[5].substring(6, 8)
+
+    const date = new Date(parseInt(year), parseInt(month), parseInt(day))
+
+    return date
+  }
 }

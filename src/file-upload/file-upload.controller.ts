@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import * as fs from 'fs'
+import { OrderService } from '../order/order.service'
 import { UserService } from '../user/user.service'
 import { FileUploadService } from './file-upload.service'
 
@@ -14,6 +15,7 @@ export class FileUploadController {
   constructor(
     private fileUploadService: FileUploadService,
     private userService: UserService,
+    private orderService: OrderService,
   ) {}
 
   @Post('upload')
@@ -26,11 +28,26 @@ export class FileUploadController {
 
     sortedUserList.forEach(async (userData) => {
       if (!isNaN(userData.id)) {
-        const saved = await this.userService.save({
-          user_id: userData.id,
+        const savedUser = await this.userService.save({
+          id: userData.id,
           name: userData.name,
         })
-        console.log(saved)
+        console.log(savedUser)
+
+        list.forEach((element) => {
+          if (userData.id === parseInt(element[0])) {
+            const date = this.fileUploadService.getDateFromString(
+              element[5],
+            )
+
+            const savedOrder = this.orderService.save({
+              id: parseInt(element[0]),
+              date,
+            })
+
+            console.log(savedOrder)
+          }
+        })
       }
     })
 

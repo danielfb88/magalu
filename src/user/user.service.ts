@@ -17,7 +17,7 @@ export class UserService {
   async save(dto: CreateUserDto): Promise<User> {
     try {
       const saved = this.userRepository.save({
-        externalUserId: dto.user_id,
+        externalUserId: dto.id,
         name: dto.name,
       })
 

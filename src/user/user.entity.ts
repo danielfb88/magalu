@@ -10,13 +10,13 @@ import {
 import { Order } from '../order/order.entity'
 
 @Entity({ name: 'user' })
-@Unique(['externalUserId'])
+@Unique(['externalId'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
   @Column()
-  externalUserId: number
+  externalId: number
 
   @Column()
   name: string

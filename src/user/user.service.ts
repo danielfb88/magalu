@@ -7,19 +7,21 @@ import { User } from './user.entity'
 export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
-    private userRepository: Repository<User>,
+    private repository: Repository<User>,
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find()
+    return this.repository.find()
   }
 
   async save(dto: CreateUserDto): Promise<User> {
     try {
-      const saved = this.userRepository.save({
-        externalUserId: dto.id,
+      const prepared = this.repository.create({
+        externalId: dto.id,
         name: dto.name,
       })
+
+      const saved = await this.repository.save(prepared)
 
       return saved
     } catch (error) {

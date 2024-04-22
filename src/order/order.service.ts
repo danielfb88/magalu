@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { Repository } from 'typeorm'
+import { User } from '../user/user.entity'
 import { CreateOrderDto } from './dto/create-order.dto'
 import { Order } from './order.entity'
 
@@ -16,15 +17,21 @@ export class OrderService {
 
   async save(dto: CreateOrderDto): Promise<Order> {
     try {
-      const saved = this.repository.save({
+      const user = new User()
+      user.id = dto.userId
+
+      const prepared = this.repository.create({
         externalId: dto.id,
-        date: dto.date,
+        orderDate: dto.date,
+        user,
       })
+
+      const saved = await this.repository.save(prepared)
 
       return saved
     } catch (error) {
       console.log(error)
-      throw error
+      // throw error
     }
   }
 }

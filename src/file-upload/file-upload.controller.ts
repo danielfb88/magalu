@@ -27,22 +27,23 @@ export class FileUploadController {
     const sortedUserList = this.fileUploadService.getSortedUsers(list)
 
     sortedUserList.forEach(async (userData) => {
-      if (!isNaN(userData.id)) {
+      if (userData.id !== null && !isNaN(userData.id)) {
         const savedUser = await this.userService.save({
           id: userData.id,
           name: userData.name,
         })
         console.log(savedUser)
 
-        list.forEach((element) => {
+        list.forEach(async (element) => {
           if (userData.id === parseInt(element[0])) {
             const date = this.fileUploadService.getDateFromString(
               element[5],
             )
 
-            const savedOrder = this.orderService.save({
+            const savedOrder = await this.orderService.save({
               id: parseInt(element[0]),
               date,
+              userId: savedUser.id,
             })
 
             console.log(savedOrder)

@@ -15,6 +15,22 @@ export class ProductService {
     return this.repository.find()
   }
 
+  async findByOrder(orderId: string): Promise<Product[]> {
+    try {
+      const result = await this.repository
+        .createQueryBuilder('product')
+        .where('product.orderId = :orderId')
+        .orderBy('product.value', 'ASC')
+        .setParameters({ orderId })
+        .getMany()
+
+      return result
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
   async save(dto: CreateProductDto): Promise<Product> {
     try {
       const order = new Order()

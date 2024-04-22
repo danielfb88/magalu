@@ -19,7 +19,7 @@ module.exports = {
   entities: [__dirname + '/**/*.entity.js'],
   autoLoadEntities: false,
   synchronize: false,
-  logging: false,
+  logging: true,
   cli: {
     migrationsDir: 'src/migrations',
   },

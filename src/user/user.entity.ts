@@ -16,7 +16,7 @@ export class User {
   id: string
 
   @Column()
-  externalUserId: string
+  externalUserId: number
 
   @Column()
   name: string

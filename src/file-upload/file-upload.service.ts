@@ -44,32 +44,13 @@ export class FileUploadService {
     return mappedList
   }
 
-  getUsers(dataList: string[][]): string[][] {
-    const userList = []
-    for (let i = 0; i < dataList.length; i++) {
-      const userId = dataList[i][0]
-      const userName = dataList[i][1]
-
-      const found = userList.find((element) => element[0] === userId)
-      if (!found) {
-        userList.push([userId, userName])
-      }
-    }
-
-    return userList
-  }
-
-  getOrdersByUser(dataList: string[][]): string[] {
-    const orderList = []
-    for (let i = 0; i < dataList.length; i++) {
-      const orderId = dataList[i][2]
-
-      const found = orderList.find((element) => element[1] === orderId)
-      if (!found) {
-        orderList.push(orderId)
-      }
-    }
-
-    return orderList
+  getSortedUsers(dataList: string[][]): { id: number; name: string }[] {
+    const userList = _.uniqBy(
+      dataList.map((data) => {
+        return { id: parseInt(data[0]), name: data[1] }
+      }),
+      'id',
+    )
+    return userList.sort((a, b) => a.id - b.id)
   }
 }

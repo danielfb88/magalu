@@ -6,11 +6,15 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import * as fs from 'fs'
+import { UserService } from '../user/user.service'
 import { FileUploadService } from './file-upload.service'
 
 @Controller('file-upload')
 export class FileUploadController {
-  constructor(private fileUploadService: FileUploadService) {}
+  constructor(
+    private fileUploadService: FileUploadService,
+    private userService: UserService,
+  ) {}
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
@@ -18,29 +22,19 @@ export class FileUploadController {
     const stream = fs.createReadStream(file.path, 'utf8')
     const plainTxt = await this.fileUploadService.streamToString(stream)
     const list = this.fileUploadService.mapStringToFields(plainTxt)
-    const userList = this.fileUploadService.getUsers(list)
-    const orderList = this.fileUploadService.getOrdersByUser(list)
+    const sortedUserList = this.fileUploadService.getSortedUsers(list)
 
-    // list.forEach((element) => {
-    //   userList.forEach((user) => {
-    //     if (element[0] === user[0]) {
-    //       const obj: IFormattedOrder = {
-    //         user_id: parseInt(user[0]),
-    //         name: user[1],
-    //       }
+    sortedUserList.forEach(async (userData) => {
+      if (!isNaN(userData.id)) {
+        const saved = await this.userService.save({
+          user_id: userData.id,
+          name: userData.name,
+        })
+        console.log(saved)
+      }
+    })
 
-    //       orderList.forEach((order) => {
-    //         if (element[2] === order) {
-    //           obj.orders.push
-    //         }
-    //       })
-    //     }
-    //   })
-    // })
-
-    // userList.forEach((user) => {})
-
-    console.log(orderList)
+    console.log(sortedUserList)
     /* 
     TODO
     2 - persistir os dados

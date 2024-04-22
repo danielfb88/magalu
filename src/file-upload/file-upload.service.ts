@@ -54,6 +54,16 @@ export class FileUploadService {
     return userList.sort((a, b) => a.id - b.id)
   }
 
+  getSortedOrders(dataList: string[][]): { id: number; date: string }[] {
+    const orderList = _.uniqBy(
+      dataList.map((data) => {
+        return { id: parseInt(data[2]), date: data[5] }
+      }),
+      'id',
+    )
+    return orderList.sort((a, b) => a.id - b.id)
+  }
+
   getDateFromString(dateString: string): Date {
     const year = dateString.substring(0, 4)
     const month = dateString.substring(4, 6)

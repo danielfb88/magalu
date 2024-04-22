@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { Product } from '../typeorm/entities/product.entity'
+import { Product } from '../product/product.entity'
 import { User } from '../user/user.entity'
 
 @Entity({ name: 'order' })

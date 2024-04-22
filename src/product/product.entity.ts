@@ -3,9 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Order } from '../order/order.entity'
 
 @Entity({ name: 'product' })
 export class Product extends BaseEntity {
@@ -14,6 +16,11 @@ export class Product extends BaseEntity {
 
   @Column()
   product_id: string
+
+  @ManyToOne(() => Order, (order) => order.products, {
+    nullable: false,
+  })
+  order: Order
 
   @Column()
   value: string

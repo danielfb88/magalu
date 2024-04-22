@@ -46,6 +46,5 @@ module.exports = {
     ],
     'import/no-cycle': 'off',
     radix: ['error', 'as-needed'],
-    'import/no-extraneous-dependencies': ['error', {'devDependencies': ['src/infrastructure/logger/formatters/colorize.formatter.ts', 'tests/**']}]
   },
 };

@@ -2,8 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
@@ -25,8 +25,8 @@ export class Order {
   })
   user: User
 
-  @ManyToMany(() => Product)
-  products: Promise<Product[]>
+  @OneToMany(() => Product, (product) => product.order)
+  products: Promise<Order[]>
 
   @Column()
   orderDate: Date

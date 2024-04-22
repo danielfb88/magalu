@@ -7,6 +7,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import * as fs from 'fs'
 import { OrderService } from '../order/order.service'
+import { ProductService } from '../product/product.service'
 import { UserService } from '../user/user.service'
 import { FileUploadService } from './file-upload.service'
 
@@ -16,6 +17,7 @@ export class FileUploadController {
     private fileUploadService: FileUploadService,
     private userService: UserService,
     private orderService: OrderService,
+    private productService: ProductService,
   ) {}
 
   @Post('upload')
@@ -36,14 +38,29 @@ export class FileUploadController {
         console.log(savedUser)
 
         sortedOrderList.forEach(async (order) => {
-          if (userData.id === order.idUser) {
+          if (userData.id === order.userId) {
             const savedOrder = await this.orderService.save({
-              id: order.idOrder,
+              id: order.orderId,
               userId: savedUser.id,
               date: this.fileUploadService.getDateFromString(order.date),
             })
 
             console.log(savedOrder)
+
+            list.forEach(async (item) => {
+              if (order.orderId === parseInt(item[2])) {
+                const prodId = parseInt(item[3])
+                const prodValue = parseFloat(item[4])
+
+                const savedProduct = await this.productService.save({
+                  id: prodId,
+                  orderId: savedOrder.id,
+                  value: prodValue,
+                })
+
+                console.log(savedProduct)
+              }
+            })
           }
         })
       }
@@ -52,7 +69,7 @@ export class FileUploadController {
     console.log(sortedUserList)
     /* 
     TODO
-    2 - persistir os dados
+    2 - persistir os produtos
     3 - retornar o json
     4 - endpoints com filtros
     5 - readme

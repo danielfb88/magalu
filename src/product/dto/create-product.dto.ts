@@ -1,4 +1,5 @@
 export class CreateProductDto {
-  product_id: number
-  value: string
+  id: number
+  orderId: string
+  value: number
 }

@@ -31,7 +31,7 @@ export class OrderService {
       return saved
     } catch (error) {
       console.log(error)
-      // throw error
+      throw error
     }
   }
 }

@@ -56,18 +56,18 @@ export class FileUploadService {
 
   getSortedOrders(
     dataList: string[][],
-  ): { idUser: number; idOrder: number; date: string }[] {
+  ): { userId: number; orderId: number; date: string }[] {
     const orderList = _.uniqBy(
       dataList.map((data) => {
         return {
-          idUser: parseInt(data[0]),
-          idOrder: parseInt(data[2]),
+          userId: parseInt(data[0]),
+          orderId: parseInt(data[2]),
           date: data[5],
         }
       }),
       'idOrder',
     )
-    return orderList.sort((a, b) => a.idOrder - b.idOrder)
+    return orderList.sort((a, b) => a.orderId - b.orderId)
   }
 
   getDateFromString(dateString: string): Date {

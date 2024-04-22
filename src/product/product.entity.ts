@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -10,20 +9,20 @@ import {
 import { Order } from '../order/order.entity'
 
 @Entity({ name: 'product' })
-export class Product extends BaseEntity {
+export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
   @Column()
-  product_id: string
+  externalId: number
 
   @ManyToOne(() => Order, (order) => order.products, {
     nullable: false,
   })
   order: Order
 
-  @Column()
-  value: string
+  @Column({ type: 'double precision' })
+  value: number
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date

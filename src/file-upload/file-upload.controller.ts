@@ -32,8 +32,8 @@ export class FileUploadController {
 
     const savedUserList: any[] = []
     const savedOrderList: any[] = []
-    const savedProductList: any[] = []
 
+    // Saving user
     for (const userData of sortedUserList) {
       if (userData.id !== null && !isNaN(userData.id)) {
         const savedUser = await this.userService.save({
@@ -43,6 +43,7 @@ export class FileUploadController {
         savedUserList.push(savedUser)
         console.log(savedUser)
 
+        // Saving user's order
         for (const order of sortedOrderList) {
           if (userData.id === order.userId) {
             const savedOrder = await this.orderService.save({
@@ -59,6 +60,7 @@ export class FileUploadController {
 
     console.log(sortedUserList)
 
+    // Saving order's product
     for (const item of list) {
       const foundOrder = savedOrderList.find(
         (savedOrder) => savedOrder.externalId === parseInt(item[2]),
@@ -73,7 +75,6 @@ export class FileUploadController {
           orderId: foundOrder.id,
           value: prodValue,
         })
-        savedProductList.push(savedProduct)
         console.log(savedProduct)
       } else {
         console.log(`ORDER ${parseInt(item[2])} NOT FOUND`)
@@ -82,6 +83,7 @@ export class FileUploadController {
 
     const resultList = []
 
+    // Returning Json
     for (const user of savedUserList) {
       const filtredOrders = savedOrderList.filter(
         (order) => order.user.id === user.id,

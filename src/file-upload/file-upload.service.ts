@@ -65,7 +65,7 @@ export class FileUploadService {
           date: data[5],
         }
       }),
-      'idOrder',
+      'orderId',
     )
     return orderList.sort((a, b) => a.orderId - b.orderId)
   }

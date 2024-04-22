@@ -29,7 +29,9 @@ export class FileUploadController {
     const sortedUserList = this.fileUploadService.getSortedUsers(list)
     const sortedOrderList = this.fileUploadService.getSortedOrders(list)
 
-    sortedUserList.forEach(async (userData) => {
+    const savedOrderList: { id: string; externalId: number }[] = []
+
+    for (const userData of sortedUserList) {
       if (userData.id !== null && !isNaN(userData.id)) {
         const savedUser = await this.userService.save({
           id: userData.id,
@@ -37,7 +39,7 @@ export class FileUploadController {
         })
         console.log(savedUser)
 
-        sortedOrderList.forEach(async (order) => {
+        for (const order of sortedOrderList) {
           if (userData.id === order.userId) {
             const savedOrder = await this.orderService.save({
               id: order.orderId,
@@ -46,27 +48,37 @@ export class FileUploadController {
             })
 
             console.log(savedOrder)
-
-            list.forEach(async (item) => {
-              if (order.orderId === parseInt(item[2])) {
-                const prodId = parseInt(item[3])
-                const prodValue = parseFloat(item[4])
-
-                const savedProduct = await this.productService.save({
-                  id: prodId,
-                  orderId: savedOrder.id,
-                  value: prodValue,
-                })
-
-                console.log(savedProduct)
-              }
+            savedOrderList.push({
+              id: savedOrder.id,
+              externalId: savedOrder.externalId,
             })
           }
-        })
+        }
       }
-    })
+    }
 
     console.log(sortedUserList)
+
+    for (const item of list) {
+      const foundOrder = savedOrderList.find(
+        (savedOrder) => savedOrder.externalId === parseInt(item[2]),
+      )
+
+      if (foundOrder) {
+        const prodId = parseInt(item[3])
+        const prodValue = parseFloat(item[4])
+
+        const savedProduct = await this.productService.save({
+          id: prodId,
+          orderId: foundOrder.id,
+          value: prodValue,
+        })
+
+        console.log(savedProduct)
+      } else {
+        console.log(`ORDER ${parseInt(item[2])} NOT FOUND`)
+      }
+    }
     /* 
     TODO
     2 - persistir os produtos

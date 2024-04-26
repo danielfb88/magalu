@@ -26,7 +26,9 @@ export class FileUploadController {
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     const stream = fs.createReadStream(file.path, 'utf8')
     const plainTxt = await this.fileUploadService.streamToString(stream)
+
     const list = this.fileUploadService.mapStringToFields(plainTxt)
+
     const sortedUserList = this.fileUploadService.getSortedUsers(list)
     const sortedOrderList = this.fileUploadService.getSortedOrders(list)
 
@@ -119,10 +121,5 @@ export class FileUploadController {
     }
 
     return resultList
-    /* 
-    TODO
-    4 - endpoints com filtros
-    5 - readme
-     */
   }
 }

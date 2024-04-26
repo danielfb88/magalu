@@ -31,7 +31,26 @@ export class OrderService {
       return saved
     } catch (error) {
       console.log(error)
-      // throw error
+      throw error
+    }
+  }
+
+  async findById(id: string): Promise<Order> {
+    try {
+      const result = await this.repository.find({
+        relations: {
+          user: true,
+          products: true,
+        },
+        where: {
+          id,
+        },
+      })
+
+      return result[0]
+    } catch (error) {
+      console.log(error)
+      throw error
     }
   }
 }

@@ -81,7 +81,11 @@ export class FileUploadService {
     const month = dateString.substring(4, 6)
     const day = dateString.substring(6, 8)
 
-    const date = new Date(parseInt(year), parseInt(month), parseInt(day))
+    const date = new Date(
+      parseInt(year),
+      parseInt(month) - 1,
+      parseInt(day),
+    )
 
     return date
   }

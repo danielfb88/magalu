@@ -9,6 +9,8 @@ import { format } from 'date-fns'
 import * as fs from 'fs'
 import { OrderService } from '../order/order.service'
 import { ProductService } from '../product/product.service'
+import { IOrderDomain } from '../shared/interface/order.domain.interface'
+import { IUserDomain } from '../shared/interface/user.domain.interface'
 import { UserService } from '../user/user.service'
 import { FileUploadService } from './file-upload.service'
 
@@ -27,59 +29,53 @@ export class FileUploadController {
     const stream = fs.createReadStream(file.path, 'utf8')
     const plainTxt = await this.fileUploadService.streamToString(stream)
 
-    const list = this.fileUploadService.mapStringToFields(plainTxt)
+    const rowList = this.fileUploadService.mapStringToFields(plainTxt)
 
-    const sortedUserList = this.fileUploadService.getSortedUsers(list)
-    const sortedOrderList = this.fileUploadService.getSortedOrders(list)
+    const sortedUserList = this.fileUploadService.getSortedUsers(rowList)
+    const sortedOrderList = this.fileUploadService.getSortedOrders(rowList)
 
-    const savedUserList: any[] = []
-    const savedOrderList: any[] = []
+    const savedUserList: IUserDomain[] = []
+    const savedOrderList: IOrderDomain[] = []
+    // const savedProductList: IProductDomain[] = [] // TODO não buscar no banco
 
-    // Saving user
-    for (const userData of sortedUserList) {
-      if (userData.id !== null && !isNaN(userData.id)) {
+    for (const user of sortedUserList) {
+      if (user.id !== null && !isNaN(user.id)) {
+        // Saving user
         const savedUser = await this.userService.save({
-          id: userData.id,
-          name: userData.name,
+          id: user.id,
+          name: user.name,
         })
         savedUserList.push(savedUser)
-        console.log(savedUser)
 
-        // Saving user's order
         for (const order of sortedOrderList) {
-          if (userData.id === order.userId) {
+          if (user.id === order.userId) {
+            // Saving order
             const savedOrder = await this.orderService.save({
               id: order.orderId,
               userId: savedUser.id,
               date: this.fileUploadService.getDateFromString(order.date),
             })
             savedOrderList.push(savedOrder)
-            console.log(savedOrder)
           }
         }
       }
     }
 
-    console.log(sortedUserList)
-
-    // Saving order's product
-    for (const item of list) {
-      const foundOrder = savedOrderList.find(
-        (savedOrder) => savedOrder.externalId === parseInt(item[2]),
+    for (const row of rowList) {
+      const order = savedOrderList.find(
+        (o) => o.externalId === parseInt(row.orderId),
       )
 
-      if (foundOrder) {
-        const prodId = parseInt(item[3])
-        const prodValue = parseFloat(item[4])
-
-        const savedProduct = await this.productService.save({
-          id: prodId,
-          orderId: foundOrder.id,
-          value: prodValue,
+      if (order) {
+        // Saving product
+        // const savedProduct = await this.productService.save({
+        await this.productService.save({
+          id: parseInt(row.prodId),
+          orderId: order.id,
+          value: parseFloat(row.value),
         })
-        console.log(savedProduct)
       } else {
-        console.log(`ORDER ${parseInt(item[2])} NOT FOUND`)
+        console.log(`ORDER ${parseInt(row.orderId)} NOT FOUND`)
       }
     }
 

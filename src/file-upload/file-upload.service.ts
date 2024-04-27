@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import * as _ from 'lodash'
+import { IRow } from '../shared/interface/row.interface'
+import { ISortedOrder } from '../shared/interface/sorted-order.interface'
+import { ISortedUser } from '../shared/interface/sorted-user.interface'
 
 @Injectable()
 export class FileUploadService {
@@ -27,10 +30,10 @@ export class FileUploadService {
     return result
   }
 
-  mapStringToFields(data: string): string[][] {
+  mapStringToFields(data: string): IRow[] {
     const dataList = data.split('\n')
 
-    const mappedList = dataList.map((row) => {
+    const rowList = dataList.map((row) => {
       const userId = row.substring(0, 10).trim()
       const userName = row.substring(10, 55).trim()
       const orderId = row.substring(55, 65).trim()
@@ -38,31 +41,29 @@ export class FileUploadService {
       const value = row.substring(75, 87).trim()
       const date = row.substring(87, 95).trim()
 
-      return [userId, userName, orderId, prodId, value, date]
+      return { userId, userName, orderId, prodId, value, date }
     })
 
-    return mappedList
+    return rowList
   }
 
-  getSortedUsers(dataList: string[][]): { id: number; name: string }[] {
+  getSortedUsers(rowList: IRow[]): ISortedUser[] {
     const userList = _.uniqBy(
-      dataList.map((data) => {
-        return { id: parseInt(data[0]), name: data[1] }
+      rowList.map((row) => {
+        return { id: parseInt(row.userId), name: row.userName }
       }),
       'id',
     )
     return userList.sort((a, b) => a.id - b.id)
   }
 
-  getSortedOrders(
-    dataList: string[][],
-  ): { userId: number; orderId: number; date: string }[] {
+  getSortedOrders(rowList: IRow[]): ISortedOrder[] {
     const orderList = _.uniqBy(
-      dataList.map((data) => {
+      rowList.map((row) => {
         return {
-          userId: parseInt(data[0]),
-          orderId: parseInt(data[2]),
-          date: data[5],
+          userId: parseInt(row.userId),
+          orderId: parseInt(row.orderId),
+          date: row.date,
         }
       }),
       'orderId',

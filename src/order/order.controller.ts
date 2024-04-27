@@ -1,4 +1,10 @@
-import { Controller, Get, NotFoundException, Param } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Query,
+} from '@nestjs/common'
 import { IResponse } from '../shared/interface/response.interface'
 import { OrderService } from './order.service'
 
@@ -7,7 +13,7 @@ export class OrderController {
   constructor(private orderService: OrderService) {}
 
   @Get(':id')
-  async findOne(@Param() params: any): Promise<IResponse> {
+  async findOne(@Param() params: { id: string }): Promise<IResponse> {
     console.log(params.id)
 
     const order = await this.orderService.findById(params.id)
@@ -17,5 +23,10 @@ export class OrderController {
     } else {
       throw new NotFoundException('Pedido não encontrado.')
     }
+  }
+
+  @Get()
+  findByDate(@Query('startDate') startDate, @Query('endDate') endDate) {
+    return `${startDate} - ${endDate}`
   }
 }

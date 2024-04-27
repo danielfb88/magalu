@@ -28,7 +28,7 @@ export class Order {
   @OneToMany(() => Product, (product) => product.order)
   products: Promise<Product[]>
 
-  @Column()
+  @Column({ type: 'timestamptz' })
   orderDate: Date
 
   @CreateDateColumn({ type: 'timestamptz' })

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { format } from 'date-fns'
-import { Repository } from 'typeorm'
+import { Between, Repository } from 'typeorm'
 import { IResponse } from '../shared/interface/response.interface'
 import { User } from '../user/user.entity'
 import { CreateOrderDto } from './dto/create-order.dto'
@@ -46,6 +46,28 @@ export class OrderService {
         },
         where: {
           id,
+        },
+      })
+
+      return result
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  async getByDate(startDate: Date, endDate: Date): Promise<Order[]> {
+    try {
+      const result = await this.repository.find({
+        relations: {
+          user: true,
+          products: true,
+        },
+        where: {
+          orderDate: Between(startDate, endDate),
+        },
+        order: {
+          orderDate: 'ASC',
         },
       })
 

@@ -52,6 +52,20 @@ export class FileUploadService {
     return rowList
   }
 
+  getDateFromString(dateString: string): Date {
+    const year = dateString.substring(0, 4)
+    const month = dateString.substring(4, 6)
+    const day = dateString.substring(6, 8)
+
+    const date = new Date(
+      parseInt(year),
+      parseInt(month) - 1,
+      parseInt(day),
+    )
+
+    return date
+  }
+
   getSortedUsers(rowList: IRow[]): ISortedUser[] {
     const userList = _.uniqBy(
       rowList.map((row) => {
@@ -74,20 +88,6 @@ export class FileUploadService {
       'orderId',
     )
     return orderList.sort((a, b) => a.orderId - b.orderId)
-  }
-
-  getDateFromString(dateString: string): Date {
-    const year = dateString.substring(0, 4)
-    const month = dateString.substring(4, 6)
-    const day = dateString.substring(6, 8)
-
-    const date = new Date(
-      parseInt(year),
-      parseInt(month) - 1,
-      parseInt(day),
-    )
-
-    return date
   }
 
   formatResponse(

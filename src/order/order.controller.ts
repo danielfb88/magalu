@@ -26,7 +26,21 @@ export class OrderController {
   }
 
   @Get()
-  findByDate(@Query('startDate') startDate, @Query('endDate') endDate) {
-    return `${startDate} - ${endDate}`
+  async findByDate(
+    @Query('startDate') startDate,
+    @Query('endDate') endDate,
+  ) {
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+
+    const orderList = await this.orderService.getByDate(start, end)
+
+    const resultList = []
+    for (const order of orderList) {
+      const formatted = await this.orderService.formatResponse(order)
+      resultList.push(formatted)
+    }
+
+    return resultList
   }
 }

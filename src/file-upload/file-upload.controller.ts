@@ -5,11 +5,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { format } from 'date-fns'
 import * as fs from 'fs'
 import { OrderService } from '../order/order.service'
 import { ProductService } from '../product/product.service'
 import { IOrderDomain } from '../shared/interface/order.domain.interface'
+import { IProductDomain } from '../shared/interface/product.domain.interface'
 import { IUserDomain } from '../shared/interface/user.domain.interface'
 import { UserService } from '../user/user.service'
 import { FileUploadService } from './file-upload.service'
@@ -36,7 +36,7 @@ export class FileUploadController {
 
     const savedUserList: IUserDomain[] = []
     const savedOrderList: IOrderDomain[] = []
-    // const savedProductList: IProductDomain[] = [] // TODO não buscar no banco
+    const savedProductList: IProductDomain[] = []
 
     for (const user of sortedUserList) {
       if (user.id !== null && !isNaN(user.id)) {
@@ -68,54 +68,21 @@ export class FileUploadController {
 
       if (order) {
         // Saving product
-        // const savedProduct = await this.productService.save({
-        await this.productService.save({
+        const savedProduct = await this.productService.save({
           id: parseInt(row.prodId),
           orderId: order.id,
           value: parseFloat(row.value),
         })
-      } else {
-        console.log(`ORDER ${parseInt(row.orderId)} NOT FOUND`)
+        savedProductList.push(savedProduct)
       }
     }
 
-    const resultList = []
+    const responseList = this.fileUploadService.formatResponse(
+      savedUserList,
+      savedOrderList,
+      savedProductList,
+    )
 
-    // Returning Json
-    for (const user of savedUserList) {
-      const filtredOrders = savedOrderList.filter(
-        (order) => order.user.id === user.id,
-      )
-
-      const mappedOrders = []
-      for (const order of filtredOrders) {
-        let total = 0
-        const products = await this.productService.findByOrder(order.id)
-
-        for (const product of products) {
-          total += product.value
-        }
-
-        mappedOrders.push({
-          order_id: order.externalId,
-          total,
-          date: format(order.orderDate, 'yyyy-MM-dd'),
-          products: products.map((product) => {
-            return {
-              product_id: product.externalId,
-              value: product.value,
-            }
-          }),
-        })
-      }
-
-      resultList.push({
-        user_id: user.externalId,
-        name: user.name,
-        orders: mappedOrders,
-      })
-    }
-
-    return resultList
+    return responseList
   }
 }

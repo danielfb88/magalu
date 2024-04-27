@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
+import { format } from 'date-fns'
 import { Repository } from 'typeorm'
+import { IResponse } from '../shared/interface/response.interface'
 import { User } from '../user/user.entity'
 import { CreateOrderDto } from './dto/create-order.dto'
 import { Order } from './order.entity'
@@ -37,7 +39,7 @@ export class OrderService {
 
   async findById(id: string): Promise<Order> {
     try {
-      const result = await this.repository.find({
+      const result = await this.repository.findOne({
         relations: {
           user: true,
           products: true,
@@ -47,10 +49,36 @@ export class OrderService {
         },
       })
 
-      return result[0]
+      return result
     } catch (error) {
       console.log(error)
       throw error
     }
+  }
+
+  async formatResponse(order: Order): Promise<IResponse> {
+    let total = 0
+    const products = (await order.products).map((prod) => {
+      total += prod.value
+      return {
+        product_id: prod.externalId,
+        value: `${prod.value}`,
+      }
+    })
+
+    const response: IResponse = {
+      user_id: order.user.externalId,
+      name: order.user.name,
+      orders: [
+        {
+          order_id: order.externalId,
+          total: `${total}`,
+          date: format(order.orderDate, 'yyyy-MM-dd'),
+          products,
+        },
+      ],
+    }
+
+    return response
   }
 }

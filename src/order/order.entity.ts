@@ -26,7 +26,7 @@ export class Order {
   user: User
 
   @OneToMany(() => Product, (product) => product.order)
-  products: Promise<Order[]>
+  products: Promise<Product[]>
 
   @Column()
   orderDate: Date

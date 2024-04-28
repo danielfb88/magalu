@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { format } from 'date-fns'
+import * as fs from 'fs'
 import * as _ from 'lodash'
 import { IOrderDomain } from '../shared/interface/order.domain.interface'
 import { IProductDomain } from '../shared/interface/product.domain.interface'
@@ -12,6 +13,10 @@ import { IUserDomain } from '../shared/interface/user.domain.interface'
 @Injectable()
 export class FileUploadService {
   constructor() {}
+
+  createReadStream(filePath: string) {
+    return fs.createReadStream(filePath, 'utf8')
+  }
 
   async streamToString(stream): Promise<string> {
     const chunks = []

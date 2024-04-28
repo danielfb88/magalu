@@ -5,7 +5,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import * as fs from 'fs'
 import { OrderService } from '../order/order.service'
 import { ProductService } from '../product/product.service'
 import { IOrderDomain } from '../shared/interface/order.domain.interface'
@@ -26,7 +25,7 @@ export class FileUploadController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const stream = fs.createReadStream(file.path, 'utf8')
+    const stream = this.fileUploadService.createReadStream(file.path)
     const plainTxt = await this.fileUploadService.streamToString(stream)
 
     const rowList = this.fileUploadService.mapStringToFields(plainTxt)

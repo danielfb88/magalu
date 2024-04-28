@@ -29,17 +29,6 @@ export class FileUploadService {
     })
   }
 
-  stringToArray(data: string): string[] {
-    const dataList = data.split('\n')
-
-    const result = []
-    for (let i = 0; i < dataList.length; i++) {
-      result[i] = _.map(_.compact(dataList[i].split('  ')), _.trim)
-    }
-
-    return result
-  }
-
   mapStringToFields(data: string): IRow[] {
     const dataList = data.split('\n')
 

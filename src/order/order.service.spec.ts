@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { format } from 'date-fns'
+import { mockProductEntity } from '../product/product.mock'
 import { mockOrderEntity } from './order.mock'
 import { OrderRepository } from './order.repository'
 import { OrderService } from './order.service'
@@ -76,6 +77,12 @@ describe('OrderService', () => {
 
   it('should format order to response successfuly', async () => {
     const order = mockOrderEntity()
+    const product = mockProductEntity()
+    product.order = undefined
+
+    order.products = new Promise((resolve) => {
+      resolve([product])
+    })
     const response = await sut.formatResponse(order)
 
     expect(response).toEqual({
@@ -84,9 +91,14 @@ describe('OrderService', () => {
       orders: [
         {
           order_id: order.externalId,
-          total: '0',
+          total: '1',
           date: format(order.orderDate, 'yyyy-MM-dd'),
-          products: [],
+          products: (await order.products).map((prod) => {
+            return {
+              product_id: prod.externalId,
+              value: `${prod.value}`,
+            }
+          }),
         },
       ],
     })

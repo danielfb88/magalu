@@ -14,8 +14,6 @@ export class OrderController {
 
   @Get(':id')
   async findOne(@Param() params: { id: string }): Promise<IResponse> {
-    console.log(params.id)
-
     const order = await this.orderService.findById(params.id)
 
     if (order) {
@@ -29,7 +27,7 @@ export class OrderController {
   async findByDate(
     @Query('startDate') startDate,
     @Query('endDate') endDate,
-  ) {
+  ): Promise<IResponse[]> {
     const start = new Date(startDate)
     const end = new Date(endDate)
 

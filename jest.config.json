@@ -1,0 +1,42 @@
+{
+  "coveragePathIgnorePatterns": [
+    "main.ts",
+    "resources",
+    ".module.ts",
+    ".interface.ts",
+    ".constants.ts",
+    ".entity.ts",
+    ".enum.ts",
+    ".repository.ts",
+    ".decorator.ts",
+    ".eslintrc.json",
+    ".dto.ts",
+    ".provider.ts",
+    ".module.ts"
+  ],
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "./",
+  "testRegex": ".*\\.spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "^@/tests/(.*)": "<rootDir>/tests/$1",
+    "^@/(.*)": "<rootDir>/src/$1"
+  },
+  "testPathIgnorePatterns": ["dist"],
+  "collectCoverage": true,
+  "collectCoverageFrom": ["<rootDir>/src/**/*.{ts,js}"],
+  "coverageDirectory": "coverage",
+  "coverageProvider": "v8",
+  "coverageReporters": ["json-summary", "lcov", "text"],
+  "testEnvironment": "node",
+  "coverageThreshold": {
+    "global": {
+      "branches": 80,
+      "lines": 80,
+      "functions": 80,
+      "statements": -10
+    }
+  }
+}

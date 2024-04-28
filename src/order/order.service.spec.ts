@@ -1,23 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { OrderController } from './order.controller'
 import { OrderService } from './order.service'
-import { orderServiceStub } from './order.stub'
+import { orderRepositoryStub } from './order.stub'
 
-describe('OrderController', () => {
-  let sut: OrderController
+describe('OrderService', () => {
+  let sut: OrderService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        OrderController,
+        OrderService,
         {
-          provide: OrderService,
-          useFactory: orderServiceStub,
+          provide: 'ORDER_REPOSITORY',
+          useFactory: orderRepositoryStub,
         },
       ],
     }).compile()
 
-    sut = module.get<OrderController>(OrderController)
+    sut = module.get<OrderService>(OrderService)
   })
 
   it('should be defined', () => {

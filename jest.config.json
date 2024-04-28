@@ -12,6 +12,8 @@
     ".eslintrc.json",
     ".dto.ts",
     ".provider.ts",
+    ".stub.ts",
+    ".mock.ts",
     ".module.ts"
   ],
   "moduleFileExtensions": ["js", "json", "ts"],

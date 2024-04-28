@@ -1,4 +1,4 @@
-import { Order } from '../order/order.entity'
+import { mockOrderEntity } from '../order/order.mock'
 import { Product } from './product.entity'
 
 export const mockProductEntity = (): Product => {
@@ -6,7 +6,7 @@ export const mockProductEntity = (): Product => {
     id: 'any-id',
     value: 1,
     externalId: 1,
-    order: new Order(),
+    order: mockOrderEntity(),
     createdAt: new Date(),
     updatedAt: new Date(),
   }

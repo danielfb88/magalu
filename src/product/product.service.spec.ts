@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { Repository } from 'typeorm'
-import { repositoryStub } from '../shared/test/repository.stub'
-import { Product } from './product.entity'
 import { mockProductEntity } from './product.mock'
+import { ProductRepository } from './product.repository'
 import { ProductService } from './product.service'
+import { productRepositoryStub } from './product.stub'
 
 describe('ProductService', () => {
   let sut: ProductService
-  let repository: Repository<Product>
+  let repository: ProductRepository
+
   const entityMock = mockProductEntity()
 
   beforeEach(async () => {
@@ -16,13 +16,13 @@ describe('ProductService', () => {
         ProductService,
         {
           provide: 'PRODUCT_REPOSITORY',
-          useFactory: repositoryStub,
+          useFactory: productRepositoryStub,
         },
       ],
     }).compile()
 
     sut = module.get<ProductService>(ProductService)
-    repository = module.get<Repository<Product>>('PRODUCT_REPOSITORY')
+    repository = module.get<ProductRepository>('PRODUCT_REPOSITORY')
   })
 
   it('should be defined', () => {
@@ -56,16 +56,14 @@ describe('ProductService', () => {
   })
 
   it('should find all successfuly', async () => {
-    jest.spyOn(repository, 'find').mockResolvedValue([])
-
+    jest.spyOn(repository, 'findAll').mockResolvedValue([])
     const list = await sut.findAll()
-
     expect(list).toEqual([])
   })
 
   it('should findByOrder successfuly', async () => {
+    jest.spyOn(repository, 'findByOrder').mockResolvedValue([])
     const list = await sut.findByOrder('any-id')
-
     expect(list).toEqual([])
   })
 })

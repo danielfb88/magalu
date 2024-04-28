@@ -1,11 +1,11 @@
 import { DataSource } from 'typeorm'
-import { Order } from './order.entity'
+import { OrderRepository } from './order.repository'
 
 export const orderProviders = [
   {
     provide: 'ORDER_REPOSITORY',
     useFactory: (dataSource: DataSource) =>
-      dataSource.getRepository(Order),
+      new OrderRepository(dataSource),
     inject: ['DATA_SOURCE'],
   },
 ]

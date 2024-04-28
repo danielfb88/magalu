@@ -4,8 +4,6 @@ export const userServiceStub = () => ({
 })
 
 export const userRepositoryStub = () => ({
-  find: jest.fn(),
-  create: jest.fn(),
+  findAll: jest.fn(),
   save: jest.fn(),
-  findOne: jest.fn(),
 })

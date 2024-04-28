@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { Repository } from 'typeorm'
-import { User } from './user.entity'
 import { mockUserEntity } from './user.mock'
+import { UserRepository } from './user.repository'
 import { UserService } from './user.service'
 import { userRepositoryStub } from './user.stub'
 
 describe('UserService', () => {
   let sut: UserService
-  let repository: Repository<User>
+  let repository: UserRepository
+
   const entityMock = mockUserEntity()
 
   beforeEach(async () => {
@@ -22,7 +22,7 @@ describe('UserService', () => {
     }).compile()
 
     sut = module.get<UserService>(UserService)
-    repository = module.get<Repository<User>>('USER_REPOSITORY')
+    repository = module.get<UserRepository>('USER_REPOSITORY')
   })
 
   it('should be defined', () => {
@@ -54,10 +54,8 @@ describe('UserService', () => {
   })
 
   it('should find all successfuly', async () => {
-    jest.spyOn(repository, 'find').mockResolvedValue([])
-
+    jest.spyOn(repository, 'findAll').mockResolvedValue([])
     const list = await sut.findAll()
-
     expect(list).toEqual([])
   })
 })

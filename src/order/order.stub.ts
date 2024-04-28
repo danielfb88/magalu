@@ -7,8 +7,8 @@ export const orderServiceStub = () => ({
 })
 
 export const orderRepositoryStub = () => ({
-  find: jest.fn(),
-  create: jest.fn(),
+  findAll: jest.fn(),
   save: jest.fn(),
-  findOne: jest.fn(),
+  findById: jest.fn(),
+  getByDate: jest.fn(),
 })

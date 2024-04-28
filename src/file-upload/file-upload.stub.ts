@@ -6,4 +6,5 @@ export const fileUploadServiceStub = () => ({
   getDateFromString: jest.fn(),
   getSortedUsers: jest.fn(),
   getSortedOrders: jest.fn(),
+  formatResponse: jest.fn(),
 })

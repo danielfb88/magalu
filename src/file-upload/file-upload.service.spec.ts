@@ -112,4 +112,12 @@ describe('FileUploadService', () => {
     const value = sut.formatResponse(userList, orderList, productList)
     expect(value[0].user_id).toEqual(1)
   })
+
+  it('should execute streamToString and return value', () => {
+    const stream = {
+      on: jest.fn(),
+    }
+    const value = sut.streamToString(stream)
+    expect(value).toBeDefined()
+  })
 })

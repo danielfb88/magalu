@@ -69,6 +69,14 @@ describe('OrderService', () => {
     expect(list).toEqual(entityMock)
   })
 
+  it('should findByExternalId successfuly', async () => {
+    jest
+      .spyOn(repository, 'findByExternalId')
+      .mockResolvedValue(entityMock)
+    const result = await sut.findByExternalId(entityMock.externalId)
+    expect(result).toEqual(entityMock)
+  })
+
   it('should getByDate successfuly', async () => {
     jest.spyOn(repository, 'getByDate').mockResolvedValue([])
     const list = await sut.getByDate(new Date(), new Date())

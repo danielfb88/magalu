@@ -101,7 +101,7 @@ export class FileUploadService {
       for (const order of orderList) {
         let total = 0
         const productList = savedProductList.filter(
-          (product) => product.order.id === order.id,
+          (product) => product?.order.id === order.id,
         )
 
         for (const product of productList) {

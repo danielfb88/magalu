@@ -2,7 +2,7 @@ import {
   Controller,
   Post,
   UploadedFile,
-  UseInterceptors,
+  UseInterceptors
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { OrderService } from '../order/order.service'
@@ -40,21 +40,37 @@ export class FileUploadController {
     for (const user of sortedUserList) {
       if (user.id !== null && !isNaN(user.id)) {
         // Saving user
-        const savedUser = await this.userService.save({
+        let savedUser = await this.userService.save({
           id: user.id,
           name: user.name,
         })
-        savedUserList.push(savedUser)
+        if (savedUser) {
+          savedUserList.push(savedUser)
+        } else {
+          savedUser = await this.userService.findByExternalId(user.id)
+          if (savedUser) {
+            savedUserList.push(savedUser)
+          }
+        }
 
         for (const order of sortedOrderList) {
           if (user.id === order.userId) {
             // Saving order
-            const savedOrder = await this.orderService.save({
+            let savedOrder = await this.orderService.save({
               id: order.orderId,
               userId: savedUser.id,
               date: this.fileUploadService.getDateFromString(order.date),
             })
-            savedOrderList.push(savedOrder)
+            if (savedOrder) {
+              savedOrderList.push(savedOrder)
+            } else {
+              savedOrder = await this.orderService.findByExternalId(
+                order.orderId,
+              )
+              if (savedOrder) {
+                savedOrderList.push(savedOrder)
+              }
+            }
           }
         }
       }

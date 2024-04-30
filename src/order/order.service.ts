@@ -26,6 +26,10 @@ export class OrderService {
     return result
   }
 
+  async findByExternalId(externalId: number): Promise<Order> {
+    return this.repository.findByExternalId(externalId)
+  }
+
   async getByDate(startDate: Date, endDate: Date): Promise<Order[]> {
     const result = await this.repository.getByDate(startDate, endDate)
     return result

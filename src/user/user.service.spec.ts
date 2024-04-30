@@ -58,4 +58,12 @@ describe('UserService', () => {
     const list = await sut.findAll()
     expect(list).toEqual([])
   })
+
+  it('should findByExternalId successfuly', async () => {
+    jest
+      .spyOn(repository, 'findByExternalId')
+      .mockResolvedValue(entityMock)
+    const result = await sut.findByExternalId(entityMock.externalId)
+    expect(result).toEqual(entityMock)
+  })
 })

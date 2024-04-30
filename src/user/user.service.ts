@@ -18,4 +18,8 @@ export class UserService {
     const saved = await this.repository.save(dto)
     return saved
   }
+
+  async findByExternalId(externalId: number): Promise<User> {
+    return this.repository.findByExternalId(externalId)
+  }
 }

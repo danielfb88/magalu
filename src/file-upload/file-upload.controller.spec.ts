@@ -109,4 +109,64 @@ describe('FileUploadController', () => {
 
     expect(result).toEqual({})
   })
+
+  it('should uploadFile with duplicated user successfuly', async () => {
+    const rowList: IRow[] = [
+      {
+        userId: '1',
+        orderId: '1',
+        prodId: '1',
+        userName: 'Seu Madruga',
+        date: '19880208',
+        value: '1',
+      },
+    ]
+
+    const sortedUsersList: ISortedUser[] = [
+      {
+        id: 1,
+        name: 'Seu Madruga',
+      },
+    ]
+
+    const sortedOrdersList: ISortedOrder[] = [
+      {
+        orderId: 1,
+        userId: 1,
+        date: '19880208',
+      },
+    ]
+
+    jest
+      .spyOn(fileUploadService, 'createReadStream')
+      .mockReturnValue('' as any)
+    jest.spyOn(fileUploadService, 'streamToString').mockResolvedValue('')
+    jest
+      .spyOn(fileUploadService, 'mapStringToFields')
+      .mockReturnValue(rowList)
+    jest
+      .spyOn(fileUploadService, 'getSortedUsers')
+      .mockReturnValue(sortedUsersList)
+    jest
+      .spyOn(fileUploadService, 'getSortedOrders')
+      .mockReturnValue(sortedOrdersList)
+    jest.spyOn(userService, 'save').mockResolvedValue(undefined)
+    jest
+      .spyOn(userService, 'findByExternalId')
+      .mockResolvedValue(mockUserEntity())
+    jest.spyOn(orderService, 'save').mockResolvedValue(undefined)
+    jest
+      .spyOn(orderService, 'findByExternalId')
+      .mockResolvedValue(mockOrderEntity())
+    jest
+      .spyOn(productService, 'save')
+      .mockResolvedValue(mockProductEntity())
+    jest
+      .spyOn(fileUploadService, 'formatResponse')
+      .mockReturnValue({} as any)
+
+    const result = await sut.uploadFile({ path: 'any-value' } as any)
+
+    expect(result).toEqual({})
+  })
 })

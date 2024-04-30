@@ -35,7 +35,7 @@ export class OrderRepository {
       return saved
     } catch (error) {
       console.log(error)
-      throw error
+      // throw error
     }
   }
 
@@ -52,6 +52,23 @@ export class OrderRepository {
       })
 
       return result
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  async findByExternalId(externalId: number): Promise<Order> {
+    try {
+      return this.baseRepository.findOne({
+        relations: {
+          user: true,
+          products: true,
+        },
+        where: {
+          externalId,
+        },
+      })
     } catch (error) {
       console.log(error)
       throw error
@@ -76,7 +93,7 @@ export class OrderRepository {
       return result
     } catch (error) {
       console.log(error)
-      throw error
+      // throw error
     }
   }
 }

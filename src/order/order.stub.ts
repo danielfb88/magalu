@@ -4,6 +4,7 @@ export const orderServiceStub = () => ({
   findById: jest.fn(),
   getByDate: jest.fn(),
   formatResponse: jest.fn(),
+  findByExternalId: jest.fn(),
 })
 
 export const orderRepositoryStub = () => ({
@@ -11,4 +12,5 @@ export const orderRepositoryStub = () => ({
   save: jest.fn(),
   findById: jest.fn(),
   getByDate: jest.fn(),
+  findByExternalId: jest.fn(),
 })

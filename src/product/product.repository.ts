@@ -35,6 +35,22 @@ export class ProductRepository {
     }
   }
 
+  async findByExternalId(externalId: number): Promise<Product> {
+    try {
+      return this.baseRepository.findOne({
+        relations: {
+          order: true,
+        },
+        where: {
+          externalId,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
   async save(dto: CreateProductDto): Promise<Product> {
     try {
       const order = new Order()
@@ -51,7 +67,7 @@ export class ProductRepository {
       return saved
     } catch (error) {
       console.log(error)
-      throw error
+      // throw error
     }
   }
 }

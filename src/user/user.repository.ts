@@ -30,7 +30,15 @@ export class UserRepository {
       return saved
     } catch (error) {
       console.log(error)
-      throw error
+      // throw error
     }
+  }
+
+  async findByExternalId(externalId: number): Promise<User> {
+    return this.baseRepository.findOne({
+      where: {
+        externalId,
+      },
+    })
   }
 }
